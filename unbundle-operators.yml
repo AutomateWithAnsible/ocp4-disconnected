@@ -12,6 +12,9 @@
 
 - name: Unbundle Operators
   hosts: localhost
+  vars:
+    inventory_dir: /mnt/c/Users/Chasescloud/PycharmProjects/ocp4-disconnected
+    op_namespace: "ocp4_operators"
   tasks:
 
     - name: find all the operators with bundle.yaml files
