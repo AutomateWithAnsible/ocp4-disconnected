@@ -4,6 +4,9 @@
   hosts: localhost
   vars_files:
     vars/main.yml
+  vars:
+    inventory_dir: "C:\Users\Chasescloud\PycharmProjects\ocp4-disconnected"
+    op_namespace: "ocp4_operators"
   tasks:
 
 ###############################################################################

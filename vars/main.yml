@@ -1,6 +1,6 @@
 # Default values
 
-ocp_release: 4.6.0
+ocp_release: 4.6.1
 product_repo: openshift-release-dev
 release_name: ocp-release
 local_secret_json: ../templates/pull-secret.json
