@@ -1,0 +1,5 @@
+packageName: klusterlet-product
+channels:
+- name: release-2.2
+  currentCSV: klusterlet-product.v2.2.2
+defaultChannel: release-2.2

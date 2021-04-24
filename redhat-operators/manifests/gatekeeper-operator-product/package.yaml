@@ -1,0 +1,5 @@
+packageName: gatekeeper-operator-product
+channels:
+- name: stable
+  currentCSV: gatekeeper-operator-product.v0.1.1
+defaultChannel: stable

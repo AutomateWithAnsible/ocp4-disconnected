@@ -1,0 +1,269 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: ClusterServiceVersion
+metadata:
+  name: local-storage-operator.4.5.0-202103270246.p0
+  namespace: placeholder
+  annotations:
+    alm-examples: |-
+      [
+        {
+          "apiVersion": "local.storage.openshift.io/v1",
+          "kind": "LocalVolume",
+          "metadata": {
+            "name": "example"
+          },
+          "spec": {
+            "storageClassDevices": [
+              {
+                "devicePaths": [
+                    "/dev/vde",
+                    "/dev/vdf"
+                ],
+                "fsType": "ext4",
+                "storageClassName": "foobar",
+                "volumeMode": "Filesystem"
+              }
+            ]
+          }
+        }
+      ]
+    categories: Storage
+    capabilities: Full Lifecycle
+    containerImage: registry.redhat.io/openshift4/ose-local-storage-operator@sha256:731107c3971ce012f824c62b7f707ba85ca8eb51acb432678efc27b17006c2ad
+    support: Red Hat
+    repository: https://github.com/openshift/local-storage-operator
+    createdAt: "2019-08-14T00:00:00Z"
+    description: >
+      Configure and use local storage volumes in kubernetes and OpenShift.
+      OpenShift 4.2 and above is only supported OpenShift versions.
+    olm.skipRange: ">=4.3.0 <4.5.0-202103270246.p0"
+  labels:
+    operator-metering: "true"
+spec:
+  relatedImages:
+    - name: ose-local-storage-diskmaker
+      image: registry.redhat.io/openshift4/ose-local-storage-diskmaker@sha256:5191bdf1587a4dac961d414d4b8375b4564a5b20879881c6970a5995a79e7da3
+    - name: ose-local-storage-operator
+      image: registry.redhat.io/openshift4/ose-local-storage-operator@sha256:731107c3971ce012f824c62b7f707ba85ca8eb51acb432678efc27b17006c2ad
+    - name: ose-local-storage-static-provisioner
+      image: registry.redhat.io/openshift4/ose-local-storage-static-provisioner@sha256:842494fa9cc8628bf00802201fa4f5db867560ea97e711a225571bd95c68a3af
+  displayName: Local Storage
+  description: Local Storage Operator
+  keywords:
+    - storage
+    - local storage
+  links:
+    - name: Documentation
+      url: https://github.com/openshift/local-storage-operator/tree/master/docs
+    - name: Source Repository
+      url: https://github.com/openshift/local-storage-operator
+  version: 4.5.0-202103270246.p0
+  maturity: stable
+  maintainers:
+    - email: aos-storage-staff@redhat.com
+      name: Red Hat
+  minKubeVersion: 1.14.0
+  provider:
+    name: Red Hat
+  labels:
+    alm-owner-metering: local-storage-operator
+    alm-status-descriptors: local-storage-operator.4.5.0-202103270246.p0
+  selector:
+    matchLabels:
+      alm-owner-metering: local-storage-operator
+  installModes:
+  - type: OwnNamespace
+    supported: true
+  - type: SingleNamespace
+    supported: true
+  - type: MultiNamespace
+    supported: false
+  - type: AllNamespaces
+    supported: false
+  install:
+    strategy: deployment
+    spec:
+      permissions:
+        - rules:
+          - apiGroups:
+            - local.storage.openshift.io
+            resources:
+            - "*"
+            verbs:
+            - "*"
+          - apiGroups:
+            - ""
+            resources:
+            - pods
+            - services
+            - endpoints
+            - persistentvolumeclaims
+            - events
+            - configmaps
+            - secrets
+            verbs:
+            - "*"
+          - apiGroups:
+            - rbac.authorization.k8s.io
+            resources:
+            - roles
+            verbs:
+            - get
+            - list
+            - watch
+            - create
+            - update
+            - patch
+            - delete
+          - apiGroups:
+            - apps
+            resources:
+            - deployments
+            - daemonsets
+            - replicasets
+            - statefulsets
+            verbs:
+            - "*"
+          serviceAccountName: local-storage-operator
+      clusterPermissions:
+        - rules:
+          - apiGroups:
+            - storage.k8s.io
+            resources:
+            - storageclasses
+            verbs:
+            - "*"
+          - apiGroups:
+            - rbac.authorization.k8s.io
+            resources:
+            - clusterroles
+            - clusterrolebindings
+            - rolebindings
+            verbs:
+            - get
+            - list
+            - watch
+            - create
+            - update
+            - patch
+            - delete
+          - apiGroups:
+            - ""
+            resources:
+            - serviceaccounts
+            verbs:
+            - get
+            - list
+            - watch
+            - create
+            - update
+            - patch
+            - delete
+          - apiGroups:
+            - ""
+            resources:
+            - persistentvolumeclaims
+            - events
+            verbs:
+              - "*"
+          - apiGroups:
+            - events.k8s.io
+            resources:
+            - events
+            verbs:
+            - "*"
+          - apiGroups:
+            - ""
+            resources:
+            - nodes
+            verbs:
+            - get
+          - apiGroups:
+            - ""
+            resources:
+            - persistentvolumes
+            verbs:
+            - get
+            - list
+            - watch
+            - create
+            - delete
+          serviceAccountName: local-storage-operator
+        - rules:
+          - apiGroups:
+            - security.openshift.io
+            resources:
+            - securitycontextconstraints
+            verbs:
+            - use
+            resourceNames:
+            - privileged
+          serviceAccountName: local-storage-admin
+      deployments:
+        - name: local-storage-operator
+          spec:
+            replicas: 1
+            selector:
+              matchLabels:
+                name: local-storage-operator
+            template:
+              metadata:
+                labels:
+                  name: local-storage-operator
+              spec:
+                serviceAccountName: local-storage-operator
+                containers:
+                  - name: local-storage-operator
+                    image: registry.redhat.io/openshift4/ose-local-storage-operator@sha256:731107c3971ce012f824c62b7f707ba85ca8eb51acb432678efc27b17006c2ad
+                    ports:
+                    - containerPort: 60000
+                      name: metrics
+                    command:
+                    - local-storage-operator
+                    imagePullPolicy: Always
+                    env:
+                      - name: WATCH_NAMESPACE
+                        valueFrom:
+                          fieldRef:
+                            fieldPath: metadata.namespace
+                      - name: OPERATOR_NAME
+                        value: "local-storage-operator"
+                      - name: PROVISIONER_IMAGE
+                        value: registry.redhat.io/openshift4/ose-local-storage-static-provisioner@sha256:842494fa9cc8628bf00802201fa4f5db867560ea97e711a225571bd95c68a3af
+                      - name: DISKMAKER_IMAGE
+                        value: registry.redhat.io/openshift4/ose-local-storage-diskmaker@sha256:5191bdf1587a4dac961d414d4b8375b4564a5b20879881c6970a5995a79e7da3
+  customresourcedefinitions:
+    owned:
+      - displayName: Local Volume
+        group: local.storage.openshift.io
+        kind: LocalVolume
+        name: localvolumes.local.storage.openshift.io
+        description: Manage local storage volumes for OpenShift
+        version: v1
+        specDescriptors:
+          - description: User requested management state of this object
+            displayName: Requested management state
+            path: managementState
+          - description: Log level of local volume diskmaker and provisioner for this object
+            displayName: LogLevel
+            path: logLevel
+          - description: Selected nodes for local storage
+            displayName: NodeSelector
+            path: nodeSelector
+            x-descriptors:
+              - 'urn:alm:descriptor:com.tectonic.ui:selector'
+          - description: StorageClass devices configured by this object
+            displayName: StorageClassDevices
+            path: storageClassDevices
+        statusDescriptors:
+          - description: Last generation of this object
+            displayName: ObservedGeneration
+            path: observedGeneration
+          - description: Current management state of this object
+            displayName: Operator management state
+            path: managementState
+          - description: Last known condition of this object
+            displayName: Conditions
+            path: conditions
+            x-descriptors:
+              - 'urn:alm:descriptor:io.kubernetes.conditions'

@@ -1,0 +1,5 @@
+packageName: jws-operator
+channels:
+- name: alpha
+  currentCSV: jws-operator.v1.0.0
+defaultChannel: alpha

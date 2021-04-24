@@ -1,0 +1,15 @@
+channels:
+- currentCSV: sriov-network-operator.v0.0.1
+  name: alpha
+- currentCSV: sriov-network-operator.v0.0.1
+  name: '4.2'
+- currentCSV: sriov-network-operator.v0.0.1-s390x
+  name: 4.2-s390x
+- currentCSV: sriov-network-operator.4.3.40-202010141211.p0
+  name: '4.3'
+- currentCSV: sriov-network-operator.4.4.0-202101261542.p0
+  name: '4.4'
+- currentCSV: sriov-network-operator.4.5.0-202103270246.p0
+  name: '4.5'
+defaultChannel: '4.5'
+packageName: sriov-network-operator

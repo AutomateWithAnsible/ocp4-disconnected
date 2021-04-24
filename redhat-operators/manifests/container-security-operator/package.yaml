@@ -1,0 +1,9 @@
+packageName: container-security-operator
+channels:
+- name: quay-v3.3
+  currentCSV: container-security-operator.v3.3.4
+- name: quay-v3.4
+  currentCSV: container-security-operator.v3.4.4
+- name: quay-v3.5
+  currentCSV: container-security-operator.v3.5.1
+defaultChannel: quay-v3.5

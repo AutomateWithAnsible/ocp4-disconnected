@@ -1,0 +1,11 @@
+packageName: ocs-operator
+channels:
+- name: stable-4.3
+  currentCSV: ocs-operator.v4.3.0
+- name: stable-4.4
+  currentCSV: ocs-operator.v4.4.2
+- name: stable-4.5
+  currentCSV: ocs-operator.v4.5.2
+- name: stable-4.6
+  currentCSV: ocs-operator.v4.6.4
+defaultChannel: stable-4.6

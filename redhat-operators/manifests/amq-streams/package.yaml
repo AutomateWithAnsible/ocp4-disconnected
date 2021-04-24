@@ -1,0 +1,11 @@
+packageName: amq-streams
+channels:
+- name: amq-streams-1.5.x
+  currentCSV: amqstreams.v1.5.4
+- name: amq-streams-1.6.x
+  currentCSV: amqstreams.v1.6.3
+- name: amq-streams-1.x
+  currentCSV: amqstreams.v1.6.3
+- name: stable
+  currentCSV: amqstreams.v1.6.3
+defaultChannel: stable

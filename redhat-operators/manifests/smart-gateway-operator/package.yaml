@@ -1,0 +1,5 @@
+packageName: smart-gateway-operator
+channels:
+- name: stable-1.2
+  currentCSV: smart-gateway-operator.v2.2.3
+defaultChannel: stable-1.2

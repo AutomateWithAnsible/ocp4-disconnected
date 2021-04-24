@@ -1,0 +1,5 @@
+packageName: web-terminal
+channels:
+- name: alpha
+  currentCSV: web-terminal.v1.0.1
+defaultChannel: alpha

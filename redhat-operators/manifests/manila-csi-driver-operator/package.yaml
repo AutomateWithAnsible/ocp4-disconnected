@@ -1,0 +1,4 @@
+packageName: manila-csi-driver-operator
+channels:
+- name: preview
+  currentCSV: manila-csi-driver-operator.v4.5.18

@@ -1,0 +1,5 @@
+packageName: businessautomation-operator
+channels:
+- name: stable
+  currentCSV: businessautomation-operator.7.8.1
+defaultChannel: stable

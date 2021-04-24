@@ -1,0 +1,5 @@
+packageName: service-telemetry-operator
+channels:
+- name: stable-1.2
+  currentCSV: service-telemetry-operator.v1.2.2
+defaultChannel: stable-1.2

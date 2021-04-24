@@ -1,0 +1,5 @@
+packageName: amq-broker-lts
+channels:
+- name: alpha
+  currentCSV: amq-broker-operator.v0.9.3
+defaultChannel: alpha

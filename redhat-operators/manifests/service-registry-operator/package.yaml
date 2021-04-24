@@ -1,0 +1,9 @@
+packageName: service-registry-operator
+channels:
+- name: serviceregistry-1
+  currentCSV: service-registry-operator.v1.1.1
+- name: serviceregistry-1.0
+  currentCSV: service-registry-operator.v1.0.2
+- name: serviceregistry-1.1
+  currentCSV: service-registry-operator.v1.1.1
+defaultChannel: serviceregistry-1.1

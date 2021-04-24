@@ -1,0 +1,13 @@
+channels:
+- currentCSV: local-storage-operator.4.2.36-202006230600.p0
+  name: '4.2'
+- currentCSV: local-storage-operator.4.2.36-202006230600.p0-s390x
+  name: 4.2-s390x
+- currentCSV: local-storage-operator.4.3.40-202010141211.p0
+  name: '4.3'
+- currentCSV: local-storage-operator.4.4.0-202101261542.p0
+  name: '4.4'
+- currentCSV: local-storage-operator.4.5.0-202103270246.p0
+  name: '4.5'
+defaultChannel: '4.5'
+packageName: local-storage-operator

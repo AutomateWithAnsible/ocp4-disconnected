@@ -1,0 +1,9 @@
+packageName: jaeger-product
+channels:
+- name: 1.13-stable
+  currentCSV: jaeger-operator.v1.13.2-1
+- name: 1.17-stable
+  currentCSV: jaeger-operator.v1.17.8
+- name: stable
+  currentCSV: jaeger-operator.v1.17.8
+defaultChannel: stable

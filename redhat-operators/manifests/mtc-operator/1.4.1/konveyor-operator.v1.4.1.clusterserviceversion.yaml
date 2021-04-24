@@ -1,0 +1,996 @@
+#! parse-kind: ClusterServiceVersion
+apiVersion: operators.coreos.com/v1alpha1
+kind: ClusterServiceVersion
+metadata:
+  name: mtc-operator.v1.4.1
+  namespace: openshift-migration
+  annotations:
+    olm.skipRange: '>=0.0.0 <1.4.1'
+    capabilities: Seamless Upgrades
+    description: Facilitates migration of container workloads from OpenShift 3.x to OpenShift 4.x
+    categories: 'OpenShift Optional'
+    containerImage: registry.redhat.io/rhmtc/openshift-migration-rhel7-operator@sha256:5ac47c798f56337b3a1c98ba1492167be0ec7c59c8afbe238f9e6f4a90296346
+    createdAt: 2019-07-25T10:21:00Z
+    repository: https://github.com/konveyor/mig-operator
+    alm-examples: |-
+      [
+        {
+            "apiVersion": "migration.openshift.io/v1alpha1",
+            "kind": "MigrationController",
+            "metadata": {
+              "name": "migration-controller",
+              "namespace": "openshift-migration"
+            },
+            "spec": {
+              "azure_resource_group": "",
+              "cluster_name": "host",
+              "migration_velero": true,
+              "migration_controller": true,
+              "migration_ui": true,
+              "migration_log_reader": true,
+              "olm_managed": true,
+              "restic_timeout": "1h",
+              "mig_pv_limit": "100",
+              "mig_pod_limit": "100",
+              "mig_namespace_limit": "10"
+            }
+        },
+        {
+            "apiVersion": "velero.io/v1",
+            "kind": "Backup",
+            "metadata": {
+              "name": "backup",
+              "namespace": "openshift-migration"
+            },
+            "spec": {}
+        },
+        {
+            "apiVersion": "velero.io/v1",
+            "kind": "BackupStorageLocation",
+            "metadata": {
+              "name": "backupstoragelocation",
+              "namespace": "openshift-migration"
+            },
+            "spec": {}
+        },
+        {
+            "apiVersion": "velero.io/v1",
+            "kind": "DeleteBackupRequest",
+            "metadata": {
+              "name": "deletebackuprequest",
+              "namespace": "openshift-migration"
+            },
+            "spec": {}
+        },
+        {
+            "apiVersion": "velero.io/v1",
+            "kind": "DownloadRequest",
+            "metadata": {
+              "name": "downloadrequest",
+              "namespace": "openshift-migration"
+            },
+            "spec": {}
+        },
+        {
+            "apiVersion": "velero.io/v1",
+            "kind": "PodVolumeBackup",
+            "metadata": {
+              "name": "podvolumebackup",
+              "namespace": "openshift-migration"
+            },
+            "spec": {}
+        },
+        {
+            "apiVersion": "velero.io/v1",
+            "kind": "PodVolumeRestore",
+            "metadata": {
+              "name": "podvolumerestore",
+              "namespace": "openshift-migration"
+            },
+            "spec": {}
+        },
+        {
+            "apiVersion": "velero.io/v1",
+            "kind": "ResticRepository",
+            "metadata": {
+              "name": "resticrepository",
+              "namespace": "openshift-migration"
+            },
+            "spec": {}
+        },
+        {
+            "apiVersion": "velero.io/v1",
+            "kind": "Restore",
+            "metadata": {
+              "name": "restore",
+              "namespace": "openshift-migration"
+            },
+            "spec": {}
+        },
+        {
+            "apiVersion": "velero.io/v1",
+            "kind": "Schedule",
+            "metadata": {
+              "name": "schedule",
+              "namespace": "openshift-migration"
+            },
+            "spec": {}
+        },
+        {
+            "apiVersion": "velero.io/v1",
+            "kind": "ServerStatusRequest",
+            "metadata": {
+              "name": "serverstatusrequest",
+              "namespace": "openshift-migration"
+            },
+            "spec": {}
+        },
+        {
+            "apiVersion": "velero.io/v1",
+            "kind": "VolumeSnapshotLocation",
+            "metadata": {
+              "name": "volumesnapshotlocation",
+              "namespace": "openshift-migration"
+            },
+            "spec": {}
+        },
+        {
+            "apiVersion": "migration.openshift.io/v1alpha1",
+            "kind": "DirectImageMigration",
+            "metadata": {
+              "name": "directimagemigration",
+              "namespace": "openshift-migration"
+            },
+            "spec": {}
+        },
+        {
+            "apiVersion": "migration.openshift.io/v1alpha1",
+            "kind": "DirectImageStreamMigration",
+            "metadata": {
+              "name": "directimagestreammigration",
+              "namespace": "openshift-migration"
+            },
+            "spec": {}
+        },
+        {
+            "apiVersion": "migration.openshift.io/v1alpha1",
+            "kind": "MigAnalytic",
+            "metadata": {
+              "name": "host",
+              "namespace": "openshift-migration"
+            },
+            "spec": {
+              "plan": {
+                "name": "foo",
+                "namespace": "openshift-migration"
+              },
+              "analyzeK8SResources": true,
+              "analyzeImageCount": true,
+              "analyzePVCapacity": true
+            }
+        },
+        {
+            "apiVersion": "migration.openshift.io/v1alpha1",
+            "kind": "MigCluster",
+            "metadata": {
+              "name": "host",
+              "namespace": "openshift-migration"
+            },
+            "spec": {}
+        },
+        {
+            "apiVersion": "migration.openshift.io/v1alpha1",
+            "kind": "DirectVolumeMigration",
+            "metadata": {
+              "name": "direct",
+              "namespace": "openshift-migration"
+            },
+            "spec": {}
+        },
+        {
+            "apiVersion": "migration.openshift.io/v1alpha1",
+                "kind": "DirectVolumeMigrationProgress",
+                "metadata": {
+                  "name": "direct-progress",
+                  "namespace": "openshift-migration"
+                },
+                "spec": {}
+        },
+        {
+            "apiVersion": "migration.openshift.io/v1alpha1",
+            "kind": "MigPlan",
+            "metadata": {
+              "name": "migplan",
+              "namespace": "openshift-migration"
+            },
+            "spec": {}
+        },
+        {
+            "apiVersion": "migration.openshift.io/v1alpha1",
+            "kind": "MigMigration",
+            "metadata": {
+              "name": "migmigration",
+              "namespace": "openshift-migration"
+            },
+            "spec": {}
+        },
+        {
+            "apiVersion": "migration.openshift.io/v1alpha1",
+            "kind": "MigStorage",
+            "metadata": {
+              "name": "migstorage",
+              "namespace": "openshift-migration"
+            },
+            "spec": {}
+        }
+      ]
+    certified: "false"
+    support: Red Hat
+    operatorframework.io/suggested-namespace: openshift-migration
+    operators.openshift.io/infrastructure-features: '["Disconnected"]'
+    operatorframework.io/cluster-monitoring: "true"
+spec:
+  skips:
+  - mtc-operator.v1.4.0
+  - mtc-operator.v1.3.2
+  - mtc-operator.v1.3.1
+  - mtc-operator.v1.3.0
+  - mtc-operator.v1.2.5
+  - mtc-operator.v1.2.4
+  - mtc-operator.v1.2.3
+  - mtc-operator.v1.2.2
+  - mtc-operator.v1.2.1
+  - mtc-operator.v1.2.0
+  relatedImages:
+  - name: controller
+    image: registry.redhat.io/rhmtc/openshift-migration-controller-rhel8@sha256:b0eeb29fde78050410ebf391da31a2e2b9e471bcabaa40d7676df615020fa7ae
+  - name: ui
+    image: registry.redhat.io/rhmtc/openshift-migration-ui-rhel8@sha256:9adde4357d1419305b019fbbaa15a24186bd5048fba0846ba7180973b71dc061
+  - name: velero
+    image: registry.redhat.io/rhmtc/openshift-migration-velero-rhel8@sha256:fa05990987eddb4903d19dca07661a8f9450db38fad6602ae8ac673e09e52799
+  - name: velero_restic_restore_helper
+    image: registry.redhat.io/rhmtc/openshift-migration-velero-restic-restore-helper-rhel8@sha256:260650d1e0a6f375add9f3a2f3375013253dc81f47f37c5275876015c57cd74a
+  - name: migration_plugin
+    image: registry.redhat.io/rhmtc/openshift-velero-plugin-rhel8@sha256:c42b1a63a9756af96f5930205a7fcab86ddc7538c0d2a4e91ce40f993e9312f2
+  - name: aws_plugin
+    image: registry.redhat.io/rhmtc/openshift-migration-velero-plugin-for-aws-rhel8@sha256:b96859318918f5c6061f0e374d2b96cd6568ff9d038d50755401ed47ea6c8a2a
+  - name: azure_plugin
+    image: registry.redhat.io/rhmtc/openshift-migration-velero-plugin-for-microsoft-azure-rhel8@sha256:5b5159e93d19462d59359fc7c8172fd266ef240b0c9669096b09592033a6e83d
+  - name: gcp_plugin
+    image: registry.redhat.io/rhmtc/openshift-migration-velero-plugin-for-gcp-rhel8@sha256:0342aae1e41e64bc8312810b501902255ff27631f4f5b1e22b71dfc43251e5bd
+  - name: registry
+    image: registry.redhat.io/rhmtc/openshift-migration-registry-rhel8@sha256:2c1480e0c60af44b3d35427974f15d0e2370d95b9c91168edccef60b5b11ebd7
+  - name: hook_runner
+    image: registry.redhat.io/rhmtc/openshift-migration-hook-runner-rhel7@sha256:385afc0e949721e6bb9c84f3f52d805aea8e44d77b44c115e8ecc590345fc9ad
+  - name: mig_log_reader
+    image: registry.redhat.io/rhmtc/openshift-migration-log-reader-rhel8@sha256:66ec3091a9765a3fff76f325ab595de6361277d03afe5175882146c57fca8283
+  - name: rsync_transfer
+    image: registry.redhat.io/rhmtc/openshift-migration-rsync-transfer-rhel8@sha256:29eeb0a279a1321f713e00f04fbac61d8c8e1ea98f49c8e38a4566a5db406f20
+  displayName: Migration Toolkit for Containers Operator
+  description: |
+    The Migration Toolkit for Containers Operator enables installation of the application migration tool components.
+
+    After you have installed the Operator, you can install components by creating a MigrationController CR.
+
+    By default, the Operator installs the following components on an OpenShift Container Platform 4 target cluster:
+
+    * velero and restic, to back up data on the source cluster and restore it on the target cluster
+    * mig-controller, to coordinate the backup and restore processes
+    * mig-ui, the web console for managing migrations
+
+    If you experience any issues or have feature requests, please file an [issue](https://github.com/konveyor/mig-operator/issues)
+
+    For more information, see the [OpenShift Container Platform Migration Guide](https://access.redhat.com/documentation/en-us/openshift_container_platform/4.4/html-single/migration/index).
+  keywords: ['migration']
+
+  maintainers:
+  - name: Red Hat
+    email: openshift-operators@redhat.com
+
+  provider:
+    name: Red Hat
+
+  links:
+  - name: Migrations
+    url: https://github.com/konveyor/mig-controller
+  - name: Documentation
+    url: https://docs.openshift.com/container-platform/latest/migration/migrating_3_4/about-migration.html
+  - name: Konveyor Operator
+    url: https://github.com/konveyor/mig-operator
+
+  labels:
+    alm-status-descriptors: mtc-operator.v1.4.1
+    alm-owner-prometheus: mtc-operator
+
+  selector:
+    matchLabels:
+      alm-owner-prometheus: mtc-operator
+
+  icon:
+  - base64data: PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxOTIgMTQ1Ij48ZGVmcz48c3R5bGU+LmNscy0xe2ZpbGw6I2UwMDt9PC9zdHlsZT48L2RlZnM+PHRpdGxlPlJlZEhhdC1Mb2dvLUhhdC1Db2xvcjwvdGl0bGU+PHBhdGggZD0iTTE1Ny43Nyw2Mi42MWExNCwxNCwwLDAsMSwuMzEsMy40MmMwLDE0Ljg4LTE4LjEsMTcuNDYtMzAuNjEsMTcuNDZDNzguODMsODMuNDksNDIuNTMsNTMuMjYsNDIuNTMsNDRhNi40Myw2LjQzLDAsMCwxLC4yMi0xLjk0bC0zLjY2LDkuMDZhMTguNDUsMTguNDUsMCwwLDAtMS41MSw3LjMzYzAsMTguMTEsNDEsNDUuNDgsODcuNzQsNDUuNDgsMjAuNjksMCwzNi40My03Ljc2LDM2LjQzLTIxLjc3LDAtMS4wOCwwLTEuOTQtMS43My0xMC4xM1oiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0xMjcuNDcsODMuNDljMTIuNTEsMCwzMC42MS0yLjU4LDMwLjYxLTE3LjQ2YTE0LDE0LDAsMCwwLS4zMS0zLjQybC03LjQ1LTMyLjM2Yy0xLjcyLTcuMTItMy4yMy0xMC4zNS0xNS43My0xNi42QzEyNC44OSw4LjY5LDEwMy43Ni41LDk3LjUxLjUsOTEuNjkuNSw5MCw4LDgzLjA2LDhjLTYuNjgsMC0xMS42NC01LjYtMTcuODktNS42LTYsMC05LjkxLDQuMDktMTIuOTMsMTIuNSwwLDAtOC40MSwyMy43Mi05LjQ5LDI3LjE2QTYuNDMsNi40MywwLDAsMCw0Mi41Myw0NGMwLDkuMjIsMzYuMywzOS40NSw4NC45NCwzOS40NU0xNjAsNzIuMDdjMS43Myw4LjE5LDEuNzMsOS4wNSwxLjczLDEwLjEzLDAsMTQtMTUuNzQsMjEuNzctMzYuNDMsMjEuNzdDNzguNTQsMTA0LDM3LjU4LDc2LjYsMzcuNTgsNTguNDlhMTguNDUsMTguNDUsMCwwLDEsMS41MS03LjMzQzIyLjI3LDUyLC41LDU1LC41LDc0LjIyYzAsMzEuNDgsNzQuNTksNzAuMjgsMTMzLjY1LDcwLjI4LDQ1LjI4LDAsNTYuNy0yMC40OCw1Ni43LTM2LjY1LDAtMTIuNzItMTEtMjcuMTYtMzAuODMtMzUuNzgiLz48L3N2Zz4=
+    mediatype: image/svg+xml
+
+  installModes:
+  - type: OwnNamespace
+    supported: true
+  - type: SingleNamespace
+    supported: false
+  - type: MultiNamespace
+    supported: false
+  - type: AllNamespaces
+    supported: false
+
+  install:
+    strategy: deployment
+    spec:
+      permissions:
+      - serviceAccountName: migration-operator
+        rules:
+        - apiGroups:
+          - rbac.authorization.k8s.io
+          resources:
+          - roles
+          - rolebindings
+          verbs:
+          - list
+          - get
+          - create
+          - delete
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - route.openshift.io
+          resources:
+          - routes
+          verbs:
+          - '*'
+        - apiGroups:
+          - noobaa.io
+          resources:
+          - noobaas
+          verbs:
+          - "*"
+        - apiGroups:
+          - apiextensions.k8s.io
+          resources:
+          - customresourcedefinitions
+          verbs:
+          - "*"
+        - apiGroups:
+          - ""
+          resources:
+          - pods
+          - services
+          - endpoints
+          - persistentvolumeclaims
+          - events
+          - configmaps
+          - secrets
+          - serviceaccounts
+          verbs:
+          - '*'
+        - apiGroups:
+          - apps
+          resources:
+          - deployments
+          - daemonsets
+          - replicasets
+          - statefulsets
+          verbs:
+          - '*'
+        - apiGroups:
+          - extensions
+          resources:
+          - daemonsets
+          verbs:
+          - '*'
+        - apiGroups:
+          - monitoring.coreos.com
+          resources:
+          - servicemonitors
+          verbs:
+          - list
+          - get
+          - create
+          - delete
+          - update
+          - patch
+          - watch
+        - apiGroups:
+          - apps
+          resourceNames:
+          - migration-operator
+          resources:
+          - deployments/finalizers
+          verbs:
+          - update
+        - apiGroups:
+          - migration.openshift.io
+          resources:
+          - '*'
+          verbs:
+          - '*'
+      clusterPermissions:
+      - serviceAccountName: migration-operator
+        rules:
+        - apiGroups:
+          - ""
+          resources:
+          - configmaps
+          - namespaces
+          - secrets
+          - services
+          verbs:
+          - '*'
+        - apiGroups:
+          - noobaa.io
+          resources:
+          - noobaas
+          verbs:
+          - "*"
+        - apiGroups:
+          - apiextensions.k8s.io
+          resources:
+          - customresourcedefinitions
+          verbs:
+          - "*"
+        - apiGroups:
+          - oauth.openshift.io
+          resources:
+          - oauthclients
+          verbs:
+          - '*'
+        - apiGroups:
+          - config.openshift.io
+          resources:
+          - apiservers
+          verbs:
+          - '*'
+        - apiGroups:
+          - operator.openshift.io
+          resources:
+          - kubeapiservers
+          - authentications
+          verbs:
+          - '*'
+        - apiGroups:
+          - migration.openshift.io
+          resources:
+          - migclusters
+          verbs:
+          - '*'
+        - apiGroups:
+          - config.openshift.io
+          resources:
+          - infrastructures
+          - clusterversions
+          verbs:
+          - get
+        - apiGroups:
+          - rbac.authorization.k8s.io
+          - security.openshift.io
+          - build.openshift.io
+          - migration.openshift.io
+          - velero.io
+          - packages.operators.coreos.com
+          resources:
+          - '*'
+          verbs:
+          - '*'
+        - apiGroups:
+          - '*'
+          resources:
+          - '*'
+          verbs:
+          - get
+          - watch
+          - list
+          - update
+          - patch
+          - create
+          - delete
+          - assign
+          - deletecollection
+        - apiGroups:
+          - ""
+          resources:
+          - serviceaccounts
+          - pods/log
+          verbs:
+          - '*'
+        - nonResourceURLs:
+          - '*'
+          verbs:
+          - '*'
+      - serviceAccountName: migration-controller
+        rules:
+        - apiGroups:
+          - ""
+          resources:
+          - serviceaccounts
+          - configmaps
+          - events
+          verbs:
+          - get
+          - list
+          - watch
+          - create
+          - update
+          - patch
+          - delete
+        - apiGroups:
+          - apps
+          - batch
+          - extensions
+          resources:
+          - '*'
+          verbs:
+          - get
+          - list
+          - watch
+          - create
+          - update
+          - patch
+          - delete
+        - apiGroups:
+          - ""
+          resources:
+          - namespaces
+          verbs:
+          - get
+          - list
+          - watch
+          - create
+          - update
+          - patch
+          - delete
+        - apiGroups:
+          - ""
+          resources:
+          - namespaces/status
+          verbs:
+          - get
+          - update
+          - patch
+        - apiGroups:
+          - migration.openshift.io
+          - velero.io
+          resources:
+          - '*'
+          verbs:
+          - '*'
+        - apiGroups:
+          - ""
+          resources:
+          - pods
+          verbs:
+          - get
+          - list
+          - watch
+          - create
+          - update
+          - patch
+          - delete
+        - apiGroups:
+          - ""
+          resources:
+          - pods/status
+          verbs:
+          - get
+          - update
+          - patch
+        - apiGroups:
+          - ""
+          resources:
+          - pods/exec
+          verbs:
+          - create
+        - apiGroups:
+          - ""
+          resources:
+          - pods/log
+          verbs:
+          - '*'
+        - apiGroups:
+          - ""
+          resources:
+          - persistentvolumes
+          verbs:
+          - get
+          - list
+          - watch
+          - create
+          - update
+          - patch
+          - delete
+        - apiGroups:
+          - ""
+          resources:
+          - persistentvolumes/status
+          verbs:
+          - get
+          - update
+          - patch
+        - apiGroups:
+          - ""
+          resources:
+          - persistentvolumeclaims
+          verbs:
+          - get
+          - list
+          - watch
+          - create
+          - update
+          - patch
+          - delete
+        - apiGroups:
+          - ""
+          resources:
+          - persistentvolumeclaims/status
+          verbs:
+          - get
+          - update
+          - patch
+        - apiGroups:
+          - image.openshift.io
+          resources:
+          - '*'
+          verbs:
+          - get
+          - list
+          - watch
+          - create
+          - update
+          - patch
+          - delete
+        - apiGroups:
+          - security.openshift.io
+          resources:
+          - securitycontextconstraints
+          verbs:
+          - use
+          resourceNames:
+          - privileged
+          - anyuid
+        - apiGroups:
+          - apps.openshift.io
+          - route.openshift.io
+          resources:
+          - '*'
+          verbs:
+          - get
+          - list
+          - watch
+          - create
+          - update
+          - patch
+          - delete
+        - apiGroups:
+          - admissionregistration.k8s.io
+          resources:
+          - mutatingwebhookconfigurations
+          - validatingwebhookconfigurations
+          verbs:
+          - get
+          - list
+          - watch
+          - create
+          - update
+          - patch
+          - delete
+        - apiGroups:
+          - ""
+          resources:
+          - secrets
+          verbs:
+          - get
+          - list
+          - watch
+          - create
+          - update
+          - patch
+          - delete
+        - apiGroups:
+          - ""
+          resources:
+          - services
+          verbs:
+          - get
+          - list
+          - watch
+          - create
+          - update
+          - patch
+          - delete
+        - apiGroups:
+          - storage.k8s.io
+          resources:
+          - storageclasses
+          verbs:
+          - get
+          - list
+          - watch
+        - apiGroups:
+          - '*'
+          resources:
+          - '*'
+          verbs:
+          - list
+          - update
+          - watch
+          - delete
+          - deletecollection
+        - apiGroups:
+          - build.openshift.io
+          - rbac.authorization.k8s.io
+          resources:
+          - '*'
+          verbs:
+          - '*'
+      - serviceAccountName: velero
+        rules:
+        - apiGroups:
+          - build.openshift.io
+          - migration.openshift.io
+          - rbac.authorization.k8s.io
+          - velero.io
+          resources:
+          - '*'
+          verbs:
+          - '*'
+        - apiGroups:
+          - ""
+          resources:
+          - serviceaccounts
+          verbs:
+          - '*'
+        - apiGroups:
+          - packages.operators.coreos.com
+          resources:
+          - packagemanifests
+          verbs:
+          - '*'
+        - apiGroups:
+          - '*'
+          resources:
+          - '*'
+          verbs:
+          - get
+          - watch
+          - list
+          - update
+          - patch
+          - create
+          - delete
+          - assign
+          - deletecollection
+        - nonResourceURLs:
+          - '*'
+          verbs:
+          - '*'
+        - apiGroups:
+          - security.openshift.io
+          resources:
+          - securitycontextconstraints
+          verbs:
+          - use
+          resourceNames:
+          - privileged
+      deployments:
+      - name: migration-operator
+        spec:
+          replicas: 1
+          selector:
+            matchLabels:
+              app: migration
+          template:
+            metadata:
+              labels:
+                app: migration
+            spec:
+              serviceAccount: migration-operator
+              containers:
+              - name: operator
+                image: registry.redhat.io/rhmtc/openshift-migration-rhel7-operator@sha256:5ac47c798f56337b3a1c98ba1492167be0ec7c59c8afbe238f9e6f4a90296346
+                imagePullPolicy: Always
+                volumeMounts:
+                - mountPath: /tmp/ansible-operator/runner
+                  name: runner
+                env:
+                - name: OPERATOR_NAME
+                  value: migration-operator
+                - name: POD_NAME
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.name
+                - name: WATCH_NAMESPACE
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.namespace
+                - name: REGISTRY
+                  value: registry.redhat.io
+                - name: PROJECT
+                  value: rhmtc
+                - name: RSYNC_TRANSFER_REPO
+                  value: openshift-migration-rsync-transfer-rhel8@sha256
+                - name: RSYNC_TRANSFER_TAG
+                  value: 29eeb0a279a1321f713e00f04fbac61d8c8e1ea98f49c8e38a4566a5db406f20
+                - name: HOOK_RUNNER_REPO
+                  value: openshift-migration-hook-runner-rhel7@sha256
+                - name: HOOK_RUNNER_TAG
+                  value: 385afc0e949721e6bb9c84f3f52d805aea8e44d77b44c115e8ecc590345fc9ad
+                - name: MIG_CONTROLLER_REPO
+                  value: openshift-migration-controller-rhel8@sha256
+                - name: MIG_CONTROLLER_TAG
+                  value: b0eeb29fde78050410ebf391da31a2e2b9e471bcabaa40d7676df615020fa7ae
+                - name: MIG_UI_REPO
+                  value: openshift-migration-ui-rhel8@sha256
+                - name: MIG_UI_TAG
+                  value: 9adde4357d1419305b019fbbaa15a24186bd5048fba0846ba7180973b71dc061
+                - name: MIG_LOG_READER_REPO
+                  value: openshift-migration-log-reader-rhel8@sha256
+                - name: MIG_LOG_READER_TAG
+                  value: 66ec3091a9765a3fff76f325ab595de6361277d03afe5175882146c57fca8283
+                - name: MIGRATION_REGISTRY_REPO
+                  value: openshift-migration-registry-rhel8@sha256
+                - name: MIGRATION_REGISTRY_TAG
+                  value: 2c1480e0c60af44b3d35427974f15d0e2370d95b9c91168edccef60b5b11ebd7
+                - name: VELERO_REPO
+                  value: openshift-migration-velero-rhel8@sha256
+                - name: VELERO_TAG
+                  value: fa05990987eddb4903d19dca07661a8f9450db38fad6602ae8ac673e09e52799
+                - name: VELERO_PLUGIN_REPO
+                  value: openshift-velero-plugin-rhel8@sha256
+                - name: VELERO_PLUGIN_TAG
+                  value: c42b1a63a9756af96f5930205a7fcab86ddc7538c0d2a4e91ce40f993e9312f2
+                - name: VELERO_AWS_PLUGIN_REPO
+                  value: openshift-migration-velero-plugin-for-aws-rhel8@sha256
+                - name: VELERO_AWS_PLUGIN_TAG
+                  value: b96859318918f5c6061f0e374d2b96cd6568ff9d038d50755401ed47ea6c8a2a
+                - name: VELERO_GCP_PLUGIN_REPO
+                  value: openshift-migration-velero-plugin-for-gcp-rhel8@sha256
+                - name: VELERO_GCP_PLUGIN_TAG
+                  value: 0342aae1e41e64bc8312810b501902255ff27631f4f5b1e22b71dfc43251e5bd
+                - name: VELERO_AZURE_PLUGIN_REPO
+                  value: openshift-migration-velero-plugin-for-microsoft-azure-rhel8@sha256
+                - name: VELERO_AZURE_PLUGIN_TAG
+                  value: 5b5159e93d19462d59359fc7c8172fd266ef240b0c9669096b09592033a6e83d
+                - name: VELERO_RESTIC_RESTORE_HELPER_REPO
+                  value: openshift-migration-velero-restic-restore-helper-rhel8@sha256
+                - name: VELERO_RESTIC_RESTORE_HELPER_TAG
+                  value: 260650d1e0a6f375add9f3a2f3375013253dc81f47f37c5275876015c57cd74a
+              volumes:
+              - name: runner
+                emptyDir: {}
+  maturity: alpha
+  version: 1.4.1
+  customresourcedefinitions:
+    owned:
+    - name: backupstoragelocations.velero.io
+      version: v1
+      kind: BackupStorageLocation
+      displayName: BackupStorageLocation
+      description: A velero backup storage location
+    - name: backups.velero.io
+      version: v1
+      kind: Backup
+      displayName: Backup
+      description: A velero backup
+    - name: deletebackuprequests.velero.io
+      version: v1
+      kind: DeleteBackupRequest
+      displayName: DeleteBackupRequest
+      description: A request to delete a velero backup
+    - name: downloadrequests.velero.io
+      version: v1
+      kind: DownloadRequest
+      displayName: DownloadRequest
+      description: A download request for velero
+    - name: directvolumemigrations.migration.openshift.io
+      version: v1alpha1
+      kind: DirectVolumeMigration
+      displayName: DirectVolumeMigration
+      description: a request to migrate PVCs from a set of namespaces directly to a target
+    - name: directvolumemigrationprogresses.migration.openshift.io
+      version: v1alpha1
+      kind: DirectVolumeMigrationProgress
+      displayName: DirectVolumeMigrationProgress
+      description: a request to migrate watch the progress of rsync pod migrating a PVC to a target
+    - name: directimagemigrations.migration.openshift.io
+      version: v1alpha1
+      kind: DirectImageMigration
+      displayName: DirectImageMigration
+      description: a request to migrate local images from a set of namespaces directly to a target
+    - name: directimagestreammigrations.migration.openshift.io
+      version: v1alpha1
+      kind: DirectImageStreamMigration
+      displayName: DirectImageStreamMigration
+      description: a request to migrate local images from a single imagestream directly to a target
+    - name: miganalytics.migration.openshift.io
+      version: v1alpha1
+      kind: MigAnalytic
+      displayName: MigAnalytic
+      description: A request to Analyze a MigPlan and its namespaces
+    - name: migclusters.migration.openshift.io
+      version: v1alpha1
+      kind: MigCluster
+      displayName: MigCluster
+      description: A cluster defined for migration
+    - name: migmigrations.migration.openshift.io
+      version: v1alpha1
+      kind: MigMigration
+      displayName: MigMigration
+      description: A migration process
+    - name: migplans.migration.openshift.io
+      version: v1alpha1
+      kind: MigPlan
+      displayName: MigPlan
+      description: A migration plan
+    - name: migrationcontrollers.migration.openshift.io
+      version: v1alpha1
+      kind: MigrationController
+      displayName: MigrationController
+      description: A migration contoller deployment
+      resources:
+      - kind: MigCluster
+        version: migration.openshift.io/v1alpha1
+      - kind: Secret
+        version: v1
+      - kind: Service
+        version: v1
+      - kind: Deployment
+        version: apps/v1
+      - kind: Configmap
+        version: v1
+      - kind: OAuthClient
+        version: oauth.openshift.io/v1
+      - kind: Route
+        version: route.openshift.io/v1
+      - kind: Daemonset
+        version: apps/v1
+    - name: mighooks.migration.openshift.io
+      version: v1alpha1
+      kind: MigHook
+      displayName: MigHook
+      description: A migration hook
+    - name: migstorages.migration.openshift.io
+      version: v1alpha1
+      kind: MigStorage
+      displayName: MigStorage
+      description: A migration storage location
+    - name: podvolumebackups.velero.io
+      version: v1
+      kind: PodVolumeBackup
+      displayName: PodVolumeBackup
+      description: A velero pod volume backup
+    - name: podvolumerestores.velero.io
+      version: v1
+      kind: PodVolumeRestore
+      displayName: PodVolumeRestore
+      description: A velero pod volume restore
+    - name: resticrepositories.velero.io
+      version: v1
+      kind: ResticRepository
+      displayName: ResticRepository
+      description: A restic repository for velero
+    - name: restores.velero.io
+      version: v1
+      kind: Restore
+      displayName: Restore
+      description: A velero restore
+    - name: schedules.velero.io
+      version: v1
+      kind: Schedule
+      displayName: Schedule
+      description: A velero schedule
+    - name: serverstatusrequests.velero.io
+      version: v1
+      kind: ServerStatusRequest
+      displayName: ServerStatusRequest
+      description: A velero server status request
+    - name: volumesnapshotlocations.velero.io
+      version: v1
+      kind: VolumeSnapshotLocation
+      displayName: VolumeSnapshotLocation
+      description: A velero volume snapshot location

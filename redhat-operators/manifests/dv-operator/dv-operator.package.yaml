@@ -1,0 +1,8 @@
+#! package-manifest: deploy/courier/1.0.0/dv-operator.v1.0.0.clusterserviceversion.yaml
+packageName: dv-operator
+channels:
+  - name: 1.x
+    currentCSV: dv.v1.0.0
+  - name: 1.0.x
+    currentCSV: dv.v1.0.0
+defaultChannel: 1.0.x

@@ -1,0 +1,1414 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: ClusterServiceVersion
+metadata:
+  annotations:
+    alm-examples: '[{"apiVersion": "operator.open-cluster-management.io/v1", "kind": "MultiClusterHub",
+      "metadata": {"name": "multiclusterhub", "namespace": "open-cluster-management"}, "spec": {}}, {"apiVersion":
+      "operator.open-cluster-management.io/v1", "kind": "ClusterManager", "metadata": {"name": "cluster-manager"},
+      "spec": {"registrationImagePullSpec": "quay.io/open-cluster-management/registration"}}, {"apiVersion":
+      "hive.openshift.io/v1", "kind": "HiveConfig", "metadata": {"name": "hive"}, "spec": {"managedDomains":
+      [{"aws": {"credentialsSecretRef": {"name": "my-route53-creds"}}, "domains": ["my-base-domain.example.com"]}]}},
+      {"apiVersion": "apps.open-cluster-management.io/v1", "kind": "Channel", "metadata": {"name": "dev-helmrepo"},
+      "spec": {"type": "HelmRepo", "pathname": "http://kubernetes-charts.storage.googleapis.com/"}, "status":
+      {"state": "N/A"}}, {"apiVersion": "apps.open-cluster-management.io/v1", "kind": "Subscription",
+      "metadata": {"name": "sub-nginx"}, "spec": {"channel": "ns-ch/predev-ch", "name": "nginx-ingress",
+      "packageFilter": {"version": "=1.26.1"}, "packageOverrides": [{"packageAlias": "nginx-ingress",
+      "packageName": "nginx-ingress", "packageOverrides": [{"path": "spec", "value": {"defaultBackend":
+      {"replicaCount": 3}}}]}], "placement": {"local": true}}}]'
+    capabilities: Seamless Upgrades
+    categories: Integration & Delivery
+    certified: 'true'
+    support: Red Hat
+    createdAt: '2021-03-10T20:03:48Z'
+    description: Advanced provisioning and management of OpenShift and Kubernetes clusters
+    operatorframework.io/suggested-namespace: open-cluster-management
+    operators.openshift.io/infrastructure-features: '["Disconnected"]'
+  name: advanced-cluster-management.v2.0.9
+  namespace: placeholder
+spec:
+  displayName: Advanced Cluster Management for Kubernetes
+  version: 2.0.9
+  provider:
+    name: Red Hat
+  maintainers:
+  - email: acm-contact@redhat.com
+    name: Red Hat
+  maturity: stable
+  description: 'Red Hat Advanced Cluster Management for Kubernetes provides the multicluster hub, a central
+    management console for managing multiple Kubernetes-based clusters across data centers, public clouds,
+    and private clouds. You can use the hub to create Red Hat OpenShift Container Platform clusters on
+    selected providers, or import existing Kubernetes-based clusters. After the clusters are managed,
+    you can set compliance requirements to ensure that the clusters maintain the specified security requirements.
+    You can also deploy business applications across your clusters.
+
+
+    Red Hat Advanced Cluster Management for Kubernetes also provides the following operators:
+
+
+    - Multicluster subscriptions: An operator that provides application management capabilties including
+    subscribing to resources from a channel and deploying those resources on MCH-managed Kubernetes clusters
+    based on placement rules.
+
+    - Hive for Red Hat OpenShift: An operator that provides APIs for provisioning and performing initial
+    configuration of OpenShift clusters.
+
+    These operators are used by the multicluster hub to provide its provisioning and application-management
+    capabilities.
+
+    ## How to Install
+
+    Use of this Red Hat product requires a licensing and subscription agreement.
+
+
+    Install the Red Hat Advanced Cluster Management for Kubernetes operator by following instructions
+    presented when you click the `Install` button. After installing the operator, create an instance of
+    the `MultiClusterHub` resource to install the hub.
+
+
+    You can find additional installation guidance in the product [documentation](https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/2.0/). '
+  icon:
+  - base64data: PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA3MjEuMTUgNzIxLjE1Ij48ZGVmcz48c3R5bGU+LmNscy0xe2ZpbGw6I2RiMzkyNzt9LmNscy0ye2ZpbGw6I2NiMzYyODt9LmNscy0ze2ZpbGw6I2ZmZjt9LmNscy00e2ZpbGw6I2UzZTNlMjt9PC9zdHlsZT48L2RlZnM+PHRpdGxlPlByb2R1Y3RfSWNvbi1SZWRfSGF0QWR2YW5jZWRfQ2x1c3Rlcl9NYW5hZ2VtZW50X2Zvcl9LdWJlcm5ldGVzLVJHQjwvdGl0bGU+PGcgaWQ9IkxheWVyXzEiIGRhdGEtbmFtZT0iTGF5ZXIgMSI+PGNpcmNsZSBjbGFzcz0iY2xzLTEiIGN4PSIzNjAuNTciIGN5PSIzNjAuNTciIHI9IjM1OC41OCIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTYxNC4xMywxMDcsMTA3LDYxNC4xM2MxNDAsMTQwLDM2Ny4wNywxNDAsNTA3LjExLDBTNzU0LjE2LDI0Ny4wNiw2MTQuMTMsMTA3WiIvPjxyZWN0IGNsYXNzPSJjbHMtMyIgeD0iMzMwLjg3IiB5PSIyODAuNiIgd2lkdGg9IjIwMy4xNyIgaGVpZ2h0PSIyMCIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTc4LjkgMzkwLjUyKSByb3RhdGUoLTQ0Ljk2KSIvPjxyZWN0IGNsYXNzPSJjbHMtMyIgeD0iMzA2LjYzIiB5PSIxNjcuODMiIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMDQuNDciIHRyYW5zZm9ybT0idHJhbnNsYXRlKC04NS4zMyAxNjIuMjcpIHJvdGF0ZSgtMjUuNDUpIi8+PHJlY3QgY2xhc3M9ImNscy0zIiB4PSIxNjIuOTgiIHk9IjM2NC4xIiB3aWR0aD0iMTk4LjI4IiBoZWlnaHQ9IjIwIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtNDIuMzkgMzMuNjEpIHJvdGF0ZSgtNi43OSkiLz48cmVjdCBjbGFzcz0iY2xzLTMiIHg9IjI0NS4xIiB5PSI0NTEuNTQiIHdpZHRoPSIyMDAuNjIiIGhlaWdodD0iMjAiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0xNjMuMDEgNzMzLjI2KSByb3RhdGUoLTgxLjMxKSIvPjxyZWN0IGNsYXNzPSJjbHMtMyIgeD0iNDQzLjg1IiB5PSIzMDMuNzYiIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMDcuMDQiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0xMDkuOTcgNjM5LjU4KSByb3RhdGUoLTY0LjMpIi8+PGNpcmNsZSBjbGFzcz0iY2xzLTMiIGN4PSI1MDQuMzQiIGN5PSIyMTguODMiIHI9IjQ0LjA4Ii8+PGNpcmNsZSBjbGFzcz0iY2xzLTMiIGN4PSIyNzIuNyIgY3k9IjE3Ny43NSIgcj0iNDQuMDgiLz48Y2lyY2xlIGNsYXNzPSJjbHMtMyIgY3g9IjU0Ny4xMiIgY3k9IjQ1Mi4xNyIgcj0iNDQuMDgiLz48Y2lyY2xlIGNsYXNzPSJjbHMtMyIgY3g9IjE2My42OCIgY3k9IjM4NS44MiIgcj0iNDQuMDgiLz48Y2lyY2xlIGNsYXNzPSJjbHMtMyIgY3g9IjMzMC4yNiIgY3k9IjU2MC43IiByPSI0NC4wOCIvPjxwYXRoIGNsYXNzPSJjbHMtNCIgZD0iTTQ0NC45NCwyNzkuOTIsMjc2LjE5LDQ0OC42N0ExMTkuMzIsMTE5LjMyLDAsMCwwLDQ0NC45NCwyNzkuOTJaIi8+PHBhdGggY2xhc3M9ImNscy0zIiBkPSJNMzc1LjY4LDI0NS43NmExMTkuMzMsMTE5LjMzLDAsMCwwLTk5LjQ5LDIwMi45MUw0NDQuOTQsMjc5LjkyQTExOC44OSwxMTguODksMCwwLDAsMzc1LjY4LDI0NS43NloiLz48L2c+PC9zdmc+
+    mediatype: image/svg+xml
+  keywords:
+  - Red Hat
+  - channel
+  - cluster
+  - install
+  - kubernetes
+  - multi-cluster
+  - multicluster
+  - multiclusterhub
+  - open-cluster-management
+  - openshift
+  - subscription
+  labels:
+    app: advanced-cluster-management
+  links:
+  - name: Documentation
+    url: https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/2.0/
+  selector:
+    matchLabels:
+      app: advanced-cluster-management
+  installModes:
+  - supported: true
+    type: OwnNamespace
+  - supported: false
+    type: SingleNamespace
+  - supported: false
+    type: MultiNamespace
+  - supported: false
+    type: AllNamespaces
+  customresourcedefinitions:
+    owned:
+    - description: MultiClusterHub defines the configuration for an instance of the MultiCluster Hub
+      displayName: MultiClusterHub
+      kind: MultiClusterHub
+      name: multiclusterhubs.operator.open-cluster-management.io
+      version: v1
+    - description: ClusterManager defines the configurations of controllers running hub that govern registration
+        and work distribution for attached Klusterlets
+      displayName: ClusterManager
+      kind: ClusterManager
+      name: clustermanagers.operator.open-cluster-management.io
+      version: v1
+    - description: Configuration for the Hive Operator
+      displayName: Hive Config
+      kind: HiveConfig
+      name: hiveconfigs.hive.openshift.io
+      version: v1
+    - description: Subscribe resources from a channel according to its package filters
+      displayName: App Subscription
+      group: apps.open-cluster-management.io
+      kind: Subscription
+      name: subscriptions.apps.open-cluster-management.io
+      version: v1
+      specDescriptors:
+      - description: The channel namespace/name that the subscription points to
+        displayName: Channel
+        path: channel
+        x-descriptors:
+        - urn:alm:descriptor:com.tectonic.ui:label
+      - description: The package name that the subscription subscribes
+        displayName: Package Name
+        path: name
+        x-descriptors:
+        - urn:alm:descriptor:com.tectonic.ui:text
+      - description: Wether enable the subscription or not
+        displayName: Placement Enabled
+        path: placement.local
+        x-descriptors:
+        - urn:alm:descriptor:com.tectonic.ui:booleanSwitch
+      - description: The package version filter applied by the subscription
+        displayName: Package Version filter
+        path: packageFilter.version
+        x-descriptors:
+        - urn:alm:descriptor:com.tectonic.ui:text
+      - description: The package label selector applied by the subscription
+        displayName: Package Label Selector
+        path: packageFilter.labelSelector
+        x-descriptors:
+        - urn:alm:descriptor:com.tectonic.ui:text
+      - description: The package name that will be overrided by the subscription
+        displayName: Overrided Package Name
+        path: packageOverrides.packageName
+        x-descriptors:
+        - urn:alm:descriptor:com.tectonic.ui:text
+      - description: The package path that will be overrided by the subscription
+        displayName: Overrided Package Path
+        path: packageOverrides.packageOverrides.path
+        x-descriptors:
+        - urn:alm:descriptor:com.tectonic.ui:text
+      - description: The value that will be replaced into the package path
+        displayName: Overrided Package value
+        path: packageOverrides.packageOverrides.value
+        x-descriptors:
+        - urn:alm:descriptor:com.tectonic.ui:text
+      statusDescriptors:
+      - description: Last updated time of the subscription
+        displayName: Last Updated Time
+        path: lastUpdateTime
+        x-descriptors:
+        - urn:alm:descriptor:text
+      - description: The current phase of the subscription
+        displayName: Phase
+        path: phase
+        x-descriptors:
+        - urn:alm:descriptor:text
+      - description: The current status of the subscription
+        displayName: Status
+        path: statuses
+        x-descriptors:
+        - urn:alm:descriptor:text
+    - description: Represent a helm chart repository
+      displayName: Channel
+      group: apps.open-cluster-management.io
+      kind: Channel
+      name: channels.apps.open-cluster-management.io
+      version: v1
+    - description: Represent a helm chart selected by the subscription, for internal use only.
+      displayName: Helm Release
+      group: apps.open-cluster-management.io
+      kind: HelmRelease
+      name: helmreleases.apps.open-cluster-management.io
+      version: v1
+    - description: Contain a k8s resource template for deployment, for internal use only.
+      displayName: Deployable
+      group: apps.open-cluster-management.io
+      kind: Deployable
+      name: deployables.apps.open-cluster-management.io
+      version: v1
+    - description: Placement Rules to determine which mangaged clusters will be deployed by multicluster
+        applications.
+      displayName: Placement Rule
+      group: apps.open-cluster-management.io
+      kind: PlacementRule
+      name: placementrules.apps.open-cluster-management.io
+      version: v1
+    - description: Application selectors to determine which subscriptions and deployables are bundled
+        into the application
+      displayName: Application
+      group: app.k8s.io
+      kind: Application
+      name: applications.app.k8s.io
+      version: v1beta1
+  install:
+    strategy: deployment
+    spec:
+      clusterPermissions:
+      - rules:
+        - apiGroups:
+          - ''
+          - admissionregistration.k8s.io
+          - apiextensions.k8s.io
+          - apiregistration.k8s.io
+          - apps
+          - apps.open-cluster-management.io
+          - authorization.k8s.io
+          - hive.openshift.io
+          - mcm.ibm.com
+          - proxy.open-cluster-management.io
+          - rbac.authorization.k8s.io
+          - security.openshift.io
+          resources:
+          - apiservices
+          - channels
+          - clusterjoinrequests
+          - clusterrolebindings
+          - clusterstatuses/log
+          - configmaps
+          - customresourcedefinitions
+          - deployments
+          - hiveconfigs
+          - mutatingwebhookconfigurations
+          - validatingwebhookconfigurations
+          - namespaces
+          - pods
+          - replicasets
+          - rolebindings
+          - secrets
+          - serviceaccounts
+          - services
+          - subjectaccessreviews
+          - subscriptions
+          verbs:
+          - get
+        - apiGroups:
+          - ''
+          - admissionregistration.k8s.io
+          - apiextensions.k8s.io
+          - apiregistration.k8s.io
+          - apps
+          - apps.open-cluster-management.io
+          - authorization.k8s.io
+          - hive.openshift.io
+          - monitoring.coreos.com
+          - rbac.authorization.k8s.io
+          - mcm.ibm.com
+          - security.openshift.io
+          resources:
+          - apiservices
+          - channels
+          - clusterjoinrequests
+          - clusterrolebindings
+          - clusterroles
+          - configmaps
+          - customresourcedefinitions
+          - deployments
+          - hiveconfigs
+          - mutatingwebhookconfigurations
+          - validatingwebhookconfigurations
+          - namespaces
+          - rolebindings
+          - secrets
+          - serviceaccounts
+          - services
+          - servicemonitors
+          - subjectaccessreviews
+          - subscriptions
+          - validatingwebhookconfigurations
+          verbs:
+          - create
+          - update
+        - apiGroups:
+          - ''
+          - apps
+          - admissionregistration.k8s.io
+          - apiregistration.k8s.io
+          - authorization.k8s.io
+          - config.openshift.io
+          - mcm.ibm.com
+          - operator.open-cluster-management.io
+          - rbac.authorization.k8s.io
+          resources:
+          - apiservices
+          - clusterjoinrequests
+          - configmaps
+          - deployments
+          - ingresses
+          - multiclusterhubs
+          - namespaces
+          - rolebindings
+          - servicemonitors
+          - secrets
+          - services
+          - subjectaccessreviews
+          - validatingwebhookconfigurations
+          verbs:
+          - list
+        - apiGroups:
+          - ''
+          - admissionregistration.k8s.io
+          - apiregistration.k8s.io
+          - apps
+          - authorization.k8s.io
+          - config.openshift.io
+          - mcm.ibm.com
+          - operator.open-cluster-management.io
+          - rbac.authorization.k8s.io
+          - storage.k8s.io
+          resources:
+          - apiservices
+          - configmaps
+          - clusterjoinrequests
+          - deployments
+          - ingresses
+          - multiclusterhubs
+          - namespaces
+          - rolebindings
+          - secrets
+          - services
+          - subjectaccessreviews
+          - validatingwebhookconfigurations
+          verbs:
+          - watch
+        - apiGroups:
+          - ''
+          - admissionregistration.k8s.io
+          - apps
+          - mcm.ibm.com
+          - monitoring.coreos.com
+          - operator.open-cluster-management.io
+          resources:
+          - deployments
+          - deployments/finalizers
+          - services
+          - services/finalizers
+          - servicemonitors
+          - servicemonitors/finalizers
+          - validatingwebhookconfigurations
+          - multiclusterhubs
+          - multiclusterhubs/finalizers
+          - multiclusterhubs/status
+          verbs:
+          - update
+        - apiGroups:
+          - admissionregistration.k8s.io
+          - apiextensions.k8s.io
+          - apiregistration.k8s.io
+          - hive.openshift.io
+          - mcm.ibm.com
+          - rbac.authorization.k8s.io
+          resources:
+          - apiservices
+          - clusterroles
+          - clusterrolebindings
+          - customresourcedefinitions
+          - hiveconfigs
+          - mutatingwebhookconfigurations
+          - validatingwebhookconfigurations
+          verbs:
+          - deletecollection
+        - apiGroups:
+          - ''
+          - action.open-cluster-management.io
+          - agent.open-cluster-management.io
+          - cluster.open-cluster-management.io
+          - work.open-cluster-management.io
+          - app.k8s.io
+          - apps.open-cluster-management.io
+          - authorization.k8s.io
+          - certificates.k8s.io
+          - clusterregistry.k8s.io
+          - cluster.open-cluster-management.io
+          - config.openshift.io
+          - compliance.mcm.ibm.com
+          - hive.openshift.io
+          - internal.open-cluster-management.io
+          - inventory.open-cluster-management.io
+          - mcm.ibm.com
+          - multicloud.ibm.com
+          - policy.open-cluster-management.io
+          - proxy.open-cluster-management.io
+          - rbac.authorization.k8s.io
+          - view.open-cluster-management.io
+          - operator.open-cluster-management.io
+          - register.open-cluster-management.io
+          resources:
+          - applications
+          - applications/status
+          - applicationrelationships
+          - applicationrelationships/status
+          - baremetalassets
+          - baremetalassets/status
+          - certificatesigningrequests
+          - certificatesigningrequests/approval
+          - channels
+          - channels/status
+          - managedclusteractions
+          - managedclusteractions/status
+          - clusterdeployments
+          - managedclusterinfos
+          - managedclusterinfos/status
+          - managedclusters
+          - managedclusters/accept
+          - managedclusters/status
+          - managedclusterviews
+          - managedclusterviews/status
+          - manifestworks
+          - manifestworks/status
+          - clustermanagers
+          - clusterroles
+          - clusterrolebindings
+          - clusterstatuses/aggregator
+          - clusterversions
+          - compliances
+          - configmaps
+          - deployables
+          - deployables/status
+          - deployableoverrides
+          - deployableoverrides/status
+          - endpoints
+          - endpointconfigs
+          - events
+          - helmrepos
+          - helmrepos/status
+          - klusterletaddonconfigs
+          - machinepools
+          - namespaces
+          - placementrules
+          - placementrules/status
+          - policies
+          - policies/status
+          - placementbindings
+          - roles
+          - rolebindings
+          - secrets
+          - signers
+          - subscriptions
+          - subscriptions/status
+          - subjectaccessreviews
+          - syncsets
+          - syncsetinstances
+          verbs:
+          - create
+          - get
+          - list
+          - watch
+          - update
+          - delete
+          - deletecollection
+          - patch
+          - approve
+          - escalate
+        serviceAccountName: multiclusterhub-operator
+      - rules:
+        - apiGroups:
+          - ''
+          resources:
+          - configmaps
+          - namespaces
+          - serviceaccounts
+          - services
+          - secrets
+          verbs:
+          - create
+          - get
+          - list
+          - update
+          - watch
+          - patch
+          - delete
+        - apiGroups:
+          - authorization.k8s.io
+          resources:
+          - subjectaccessreviews
+          verbs:
+          - create
+        - apiGroups:
+          - ''
+          - events.k8s.io
+          resources:
+          - events
+          verbs:
+          - create
+          - patch
+          - update
+        - apiGroups:
+          - apps
+          resources:
+          - deployments
+          verbs:
+          - create
+          - get
+          - list
+          - update
+          - watch
+          - patch
+          - delete
+        - apiGroups:
+          - rbac.authorization.k8s.io
+          resources:
+          - clusterrolebindings
+          - rolebindings
+          verbs:
+          - create
+          - get
+          - list
+          - update
+          - watch
+          - patch
+          - delete
+        - apiGroups:
+          - rbac.authorization.k8s.io
+          resources:
+          - clusterroles
+          - roles
+          verbs:
+          - create
+          - get
+          - list
+          - update
+          - watch
+          - patch
+          - delete
+          - escalate
+          - bind
+        - apiGroups:
+          - apiextensions.k8s.io
+          resources:
+          - customresourcedefinitions
+          verbs:
+          - create
+          - get
+          - list
+          - update
+          - watch
+          - patch
+          - delete
+        - apiGroups:
+          - apiregistration.k8s.io
+          resources:
+          - apiservices
+          verbs:
+          - create
+          - get
+          - list
+          - update
+          - watch
+          - patch
+          - delete
+        - apiGroups:
+          - admissionregistration.k8s.io
+          resources:
+          - validatingwebhookconfigurations
+          verbs:
+          - create
+          - get
+          - list
+          - update
+          - watch
+          - patch
+          - delete
+        - apiGroups:
+          - operator.open-cluster-management.io
+          resources:
+          - clustermanagers
+          verbs:
+          - get
+          - list
+          - watch
+          - update
+          - delete
+        - apiGroups:
+          - operator.open-cluster-management.io
+          resources:
+          - clustermanagers/status
+          verbs:
+          - update
+          - patch
+        serviceAccountName: cluster-manager
+      - rules:
+        - apiGroups:
+          - hive.openshift.io
+          resources:
+          - '*'
+          verbs:
+          - '*'
+        - apiGroups:
+          - velero.io
+          resources:
+          - backups
+          verbs:
+          - create
+        - apiGroups:
+          - ''
+          resources:
+          - serviceaccounts
+          - serviceaccounts/finalizers
+          - secrets
+          - secrets/finalizers
+          - services
+          - services/finalizers
+          - events
+          - configmaps
+          - namespaces
+          - persistentvolumeclaims
+          verbs:
+          - '*'
+        - apiGroups:
+          - apiregistration.k8s.io
+          resources:
+          - apiservices
+          - apiservices/finalizers
+          verbs:
+          - get
+          - list
+          - watch
+          - create
+          - update
+          - patch
+          - delete
+        - apiGroups:
+          - admissionregistration.k8s.io
+          resources:
+          - validatingwebhookconfigurations
+          - mutatingwebhookconfigurations
+          verbs:
+          - get
+          - list
+          - watch
+          - create
+          - update
+          - patch
+          - delete
+        - apiGroups:
+          - apps
+          resources:
+          - deployments
+          - deployments/finalizers
+          - daemonsets
+          - daemonsets/finalizers
+          verbs:
+          - get
+          - list
+          - watch
+          - create
+          - update
+          - patch
+          - delete
+        - apiGroups:
+          - apiextensions.k8s.io
+          resources:
+          - customresourcedefinitions
+          verbs:
+          - get
+          - list
+          - watch
+          - create
+          - update
+          - patch
+        - apiGroups:
+          - rbac.authorization.k8s.io
+          resources:
+          - clusterroles
+          - clusterrolebindings
+          - roles
+          - rolebindings
+          verbs:
+          - get
+          - list
+          - watch
+          - create
+          - update
+          - patch
+          - delete
+        - apiGroups:
+          - apps.openshift.io
+          resources:
+          - deploymentconfigs
+          verbs:
+          - get
+          - list
+          - watch
+        - apiGroups:
+          - authorization.openshift.io
+          resources:
+          - clusterroles
+          - clusterrolebindings
+          verbs:
+          - get
+          - list
+          - watch
+          - create
+          - update
+          - patch
+          - delete
+        - apiGroups:
+          - batch
+          resources:
+          - jobs
+          verbs:
+          - get
+          - list
+          - watch
+          - create
+          - update
+          - patch
+          - delete
+        - apiGroups:
+          - ''
+          resources:
+          - pods
+          - pods/log
+          verbs:
+          - get
+          - list
+          - watch
+        - apiGroups:
+          - admission.hive.openshift.io
+          resources:
+          - dnszones
+          verbs:
+          - get
+          - list
+          - watch
+        - apiGroups:
+          - authorization.k8s.io
+          resources:
+          - subjectaccessreviews
+          verbs:
+          - create
+        - apiGroups:
+          - admission.hive.openshift.io
+          resources:
+          - clusterdeployments
+          - clusterimagesets
+          - clusterprovisions
+          - dnszones
+          - machinepools
+          - selectorsyncsets
+          - syncsets
+          verbs:
+          - get
+          - list
+          - watch
+          - create
+          - update
+          - patch
+          - delete
+        serviceAccountName: hive-operator
+      - rules:
+        - apiGroups:
+          - '*'
+          resources:
+          - '*'
+          verbs:
+          - '*'
+        serviceAccountName: multicluster-operators
+      deployments:
+      - name: multiclusterhub-operator
+        spec:
+          replicas: 1
+          selector:
+            matchLabels:
+              name: multiclusterhub-operator
+          strategy: {}
+          template:
+            metadata:
+              labels:
+                name: multiclusterhub-operator
+            spec:
+              containers:
+              - command:
+                - multiclusterhub-operator
+                env:
+                - name: WATCH_NAMESPACE
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.annotations['olm.targetNamespaces']
+                - name: POD_NAME
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.name
+                - name: POD_NAMESPACE
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.namespace
+                - name: OPERATOR_NAME
+                  value: multiclusterhub-operator
+                - name: USER
+                  value: multiclusterhub-operator
+                - name: TEMPLATES_PATH
+                  value: /usr/local/templates
+                - name: MANIFESTS_PATH
+                  value: /image-manifests
+                image: registry.redhat.io/rhacm2/multiclusterhub-rhel8@sha256:7b95d971fbc7a97689fea8af8e15dcb0d32dfe2bc5a62bab9f406466983f7d5d
+                imagePullPolicy: Always
+                name: multiclusterhub-operator
+                resources:
+                  limits:
+                    memory: 2Gi
+                  requests:
+                    cpu: 100m
+                    memory: 256Mi
+              serviceAccountName: multiclusterhub-operator
+      - name: cluster-manager
+        spec:
+          replicas: 3
+          selector:
+            matchLabels:
+              app: cluster-manager
+          strategy: {}
+          template:
+            metadata:
+              labels:
+                app: cluster-manager
+            spec:
+              affinity:
+                podAntiAffinity:
+                  preferredDuringSchedulingIgnoredDuringExecution:
+                  - podAffinityTerm:
+                      labelSelector:
+                        matchExpressions:
+                        - key: app
+                          operator: In
+                          values:
+                          - cluster-manager
+                      topologyKey: failure-domain.beta.kubernetes.io/zone
+                    weight: 70
+                  - podAffinityTerm:
+                      labelSelector:
+                        matchExpressions:
+                        - key: app
+                          operator: In
+                          values:
+                          - cluster-manager
+                      topologyKey: kubernetes.io/hostname
+                    weight: 30
+              containers:
+              - args:
+                - /registration-operator
+                - hub
+                image: registry.redhat.io/rhacm2/registration-rhel8-operator@sha256:4eecce2440d0ce241b44105ad2f1d3e36ad8e368f6e4a335677f3ed06e4a14da
+                imagePullPolicy: IfNotPresent
+                livenessProbe:
+                  httpGet:
+                    path: /healthz
+                    port: 8443
+                    scheme: HTTPS
+                  initialDelaySeconds: 2
+                  periodSeconds: 10
+                name: registration-operator
+                readinessProbe:
+                  httpGet:
+                    path: /healthz
+                    port: 8443
+                    scheme: HTTPS
+                  initialDelaySeconds: 2
+                resources:
+                  requests:
+                    cpu: 100m
+                    memory: 128Mi
+              serviceAccountName: cluster-manager
+      - name: hive-operator
+        spec:
+          replicas: 1
+          revisionHistoryLimit: 4
+          selector:
+            matchLabels:
+              control-plane: hive-operator
+              controller-tools.k8s.io: '1.0'
+          template:
+            metadata:
+              labels:
+                control-plane: hive-operator
+                controller-tools.k8s.io: '1.0'
+            spec:
+              containers:
+              - command:
+                - /opt/services/hive-operator
+                - --log-level
+                - info
+                env:
+                - name: CLI_CACHE_DIR
+                  value: /var/cache/kubectl
+                - name: HIVE_OPERATOR_NS
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.namespace
+                image: registry.redhat.io/rhacm2/openshift-hive-rhel7@sha256:f9663e3036d17c84d28811cfae494a0200755c64c338eb68e8d956f3de3c3548
+                imagePullPolicy: Always
+                livenessProbe:
+                  httpGet:
+                    path: /healthz
+                    port: 8080
+                name: hive-operator
+                readinessProbe:
+                  httpGet:
+                    path: /readyz
+                    port: 8080
+                resources:
+                  requests:
+                    cpu: 100m
+                    memory: 256Mi
+                volumeMounts:
+                - mountPath: /var/cache/kubectl
+                  name: kubectl-cache
+              serviceAccountName: hive-operator
+              terminationGracePeriodSeconds: 10
+              volumes:
+              - emptyDir: {}
+                name: kubectl-cache
+      - name: multicluster-operators-application
+        spec:
+          replicas: 1
+          selector:
+            matchLabels:
+              app: multicluster-operators-application
+          strategy: {}
+          template:
+            metadata:
+              labels:
+                app: multicluster-operators-application
+            spec:
+              securityContext:
+                runAsNonRoot: true
+              affinity:
+                podAntiAffinity:
+                  preferredDuringSchedulingIgnoredDuringExecution:
+                  - weight: 70
+                    podAffinityTerm:
+                      topologyKey: failure-domain.beta.kubernetes.io/zone
+                      labelSelector:
+                        matchExpressions:
+                        - key: app
+                          operator: In
+                          values:
+                          - multicluster-operators-application
+                  - weight: 35
+                    podAffinityTerm:
+                      topologyKey: kubernetes.io/hostname
+                      labelSelector:
+                        matchExpressions:
+                        - key: app
+                          operator: In
+                          values:
+                          - multicluster-operators-application
+              containers:
+              - command:
+                - /usr/local/bin/multicluster-operators-placementrule
+                - --alsologtostderr
+                env:
+                - name: WATCH_NAMESPACE
+                - name: POD_NAME
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.name
+                - name: POD_NAMESPACE
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.namespace
+                - name: DEPLOYMENT_LABEL
+                  value: multicluster-operators-application
+                - name: OPERATOR_NAME
+                  value: multicluster-operators-placementrule
+                livenessProbe:
+                  exec:
+                    command:
+                    - ls
+                  initialDelaySeconds: 15
+                  periodSeconds: 15
+                readinessProbe:
+                  exec:
+                    command:
+                    - ls
+                  initialDelaySeconds: 15
+                  periodSeconds: 15
+                image: registry.redhat.io/rhacm2/multicluster-operators-placementrule-rhel8@sha256:e6af5acc3eeccf81bdbaa476158ecd690c0cb35d34f20ad5cd98ddc96d556126
+                imagePullPolicy: Always
+                name: multicluster-operators-placementrule
+                resources:
+                  limits:
+                    cpu: 100m
+                    memory: 512Mi
+                  requests:
+                    cpu: 25m
+                    memory: 64Mi
+                volumeMounts:
+                - name: tmp
+                  mountPath: /tmp
+              - command:
+                - /usr/local/bin/multicluster-operators-deployable
+                - --alsologtostderr
+                env:
+                - name: WATCH_NAMESPACE
+                - name: POD_NAME
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.name
+                - name: POD_NAMESPACE
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.namespace
+                - name: DEPLOYMENT_LABEL
+                  value: multicluster-operators-application
+                - name: OPERATOR_NAME
+                  value: multicluster-operators-deployable
+                livenessProbe:
+                  exec:
+                    command:
+                    - ls
+                  initialDelaySeconds: 15
+                  periodSeconds: 15
+                readinessProbe:
+                  exec:
+                    command:
+                    - ls
+                  initialDelaySeconds: 15
+                  periodSeconds: 15
+                image: registry.redhat.io/rhacm2/multicluster-operators-deployable-rhel8@sha256:a73f4de70a84f470fba2f811a236b7e034aad1d246aa4f5335383eb7b1c77aaa
+                imagePullPolicy: Always
+                name: multicluster-operators-deployable
+                resources:
+                  limits:
+                    cpu: 500m
+                    memory: 512Mi
+                  requests:
+                    cpu: 100m
+                    memory: 64Mi
+                volumeMounts:
+                - name: tmp
+                  mountPath: /tmp
+              - command:
+                - /usr/local/bin/multicluster-operators-channel
+                - --alsologtostderr
+                ports:
+                - containerPort: 9443
+                  name: chn-whk-server
+                  protocol: TCP
+                env:
+                - name: WATCH_NAMESPACE
+                - name: POD_NAME
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.name
+                - name: POD_NAMESPACE
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.namespace
+                - name: DEPLOYMENT_LABEL
+                  value: multicluster-operators-application
+                - name: OPERATOR_NAME
+                  value: multicluster-operators-channel
+                livenessProbe:
+                  exec:
+                    command:
+                    - ls
+                  initialDelaySeconds: 15
+                  periodSeconds: 15
+                readinessProbe:
+                  exec:
+                    command:
+                    - ls
+                  initialDelaySeconds: 15
+                  periodSeconds: 15
+                image: registry.redhat.io/rhacm2/multicluster-operators-channel-rhel8@sha256:2588600b04da4f37ab5494573063f53951f74aa18dac5ac39afa6e0a6d30b977
+                imagePullPolicy: Always
+                name: multicluster-operators-channel
+                resources:
+                  limits:
+                    cpu: 500m
+                    memory: 512Mi
+                  requests:
+                    cpu: 100m
+                    memory: 64Mi
+                volumeMounts:
+                - name: tmp
+                  mountPath: /tmp
+              - command:
+                - /usr/local/bin/multicluster-operators-application
+                - --alsologtostderr
+                ports:
+                - containerPort: 9442
+                  name: app-whk-server
+                  protocol: TCP
+                env:
+                - name: WATCH_NAMESPACE
+                - name: POD_NAME
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.name
+                - name: POD_NAMESPACE
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.namespace
+                - name: DEPLOYMENT_LABEL
+                  value: multicluster-operators-application
+                - name: OPERATOR_NAME
+                  value: multicluster-operators-application
+                livenessProbe:
+                  exec:
+                    command:
+                    - ls
+                  initialDelaySeconds: 15
+                  periodSeconds: 15
+                readinessProbe:
+                  exec:
+                    command:
+                    - ls
+                  initialDelaySeconds: 15
+                  periodSeconds: 15
+                image: registry.redhat.io/rhacm2/multicluster-operators-application-rhel8@sha256:c30706980408fb0cd1848ca86687f20a4d67d54dbf5e27e8aa844498d51aed41
+                imagePullPolicy: Always
+                name: multicluster-operators-application
+                resources:
+                  limits:
+                    cpu: 100m
+                    memory: 512Mi
+                  requests:
+                    cpu: 25m
+                    memory: 64Mi
+                volumeMounts:
+                - name: tmp
+                  mountPath: /tmp
+              volumes:
+              - name: tmp
+                emptyDir: {}
+              serviceAccountName: multicluster-operators
+      - name: multicluster-operators-standalone-subscription
+        spec:
+          replicas: 1
+          selector:
+            matchLabels:
+              app: multicluster-operators-standalone-subscription
+          strategy: {}
+          template:
+            metadata:
+              labels:
+                app: multicluster-operators-standalone-subscription
+            spec:
+              securityContext:
+                runAsNonRoot: true
+              affinity:
+                podAntiAffinity:
+                  preferredDuringSchedulingIgnoredDuringExecution:
+                  - weight: 70
+                    podAffinityTerm:
+                      topologyKey: failure-domain.beta.kubernetes.io/zone
+                      labelSelector:
+                        matchExpressions:
+                        - key: app
+                          operator: In
+                          values:
+                          - multicluster-operators-standalone-subscription
+                  - weight: 35
+                    podAffinityTerm:
+                      topologyKey: kubernetes.io/hostname
+                      labelSelector:
+                        matchExpressions:
+                        - key: app
+                          operator: In
+                          values:
+                          - multicluster-operators-standalone-subscription
+              containers:
+              - command:
+                - /usr/local/bin/multicluster-operators-subscription
+                - --standalone
+                - --sync-interval=60
+                env:
+                - name: WATCH_NAMESPACE
+                - name: POD_NAME
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.name
+                - name: POD_NAMESPACE
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.namespace
+                - name: DEPLOYMENT_LABEL
+                  value: multicluster-operators-standalone-subscription
+                - name: OPERATOR_NAME
+                  value: multicluster-operators-standalone-subscription
+                livenessProbe:
+                  exec:
+                    command:
+                    - ls
+                  initialDelaySeconds: 15
+                  periodSeconds: 15
+                readinessProbe:
+                  exec:
+                    command:
+                    - ls
+                  initialDelaySeconds: 15
+                  periodSeconds: 15
+                image: registry.redhat.io/rhacm2/multicluster-operators-subscription-rhel8@sha256:9d48ebbfe5a3b5e03f51d71e3a3063f8854dfca93a7074c4d2d70c3f9359b4c3
+                imagePullPolicy: Always
+                name: multicluster-operators-standalone-subscription
+                resources:
+                  limits:
+                    cpu: 750m
+                    memory: 2Gi
+                  requests:
+                    cpu: 150m
+                    memory: 128Mi
+                volumeMounts:
+                - name: tmp
+                  mountPath: /tmp
+                - name: multicluster-operators-subscription-tls
+                  readOnly: true
+                  mountPath: /etc/subscription
+              volumes:
+              - name: tmp
+                emptyDir: {}
+              - name: multicluster-operators-subscription-tls
+                secret: null
+                defaultMode: 420
+                secretName: multicluster-operators-subscription
+                items:
+                - key: tls.crt
+                  path: tls.crt
+                - key: tls.key
+                  path: tls.key
+              serviceAccountName: multicluster-operators
+      - name: multicluster-operators-hub-subscription
+        spec:
+          replicas: 1
+          selector:
+            matchLabels:
+              app: multicluster-operators-hub-subscription
+          strategy: {}
+          template:
+            metadata:
+              labels:
+                app: multicluster-operators-hub-subscription
+            spec:
+              securityContext:
+                runAsNonRoot: true
+              affinity:
+                podAntiAffinity:
+                  preferredDuringSchedulingIgnoredDuringExecution:
+                  - weight: 70
+                    podAffinityTerm:
+                      topologyKey: failure-domain.beta.kubernetes.io/zone
+                      labelSelector:
+                        matchExpressions:
+                        - key: app
+                          operator: In
+                          values:
+                          - multicluster-operators-hub-subscription
+                  - weight: 35
+                    podAffinityTerm:
+                      topologyKey: kubernetes.io/hostname
+                      labelSelector:
+                        matchExpressions:
+                        - key: app
+                          operator: In
+                          values:
+                          - multicluster-operators-hub-subscription
+              containers:
+              - command:
+                - /usr/local/bin/multicluster-operators-subscription
+                - --sync-interval=60
+                ports:
+                - containerPort: 8443
+                env:
+                - name: WATCH_NAMESPACE
+                - name: POD_NAME
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.name
+                - name: POD_NAMESPACE
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.namespace
+                - name: DEPLOYMENT_LABEL
+                  value: multicluster-operators-hub-subscription
+                - name: OPERATOR_NAME
+                  value: multicluster-operators-hub-subscription
+                livenessProbe:
+                  exec:
+                    command:
+                    - ls
+                  initialDelaySeconds: 15
+                  periodSeconds: 15
+                readinessProbe:
+                  exec:
+                    command:
+                    - ls
+                  initialDelaySeconds: 15
+                  periodSeconds: 15
+                image: registry.redhat.io/rhacm2/multicluster-operators-subscription-rhel8@sha256:9d48ebbfe5a3b5e03f51d71e3a3063f8854dfca93a7074c4d2d70c3f9359b4c3
+                imagePullPolicy: Always
+                name: multicluster-operators-hub-subscription
+                resources:
+                  limits:
+                    cpu: 500m
+                    memory: 2Gi
+                  requests:
+                    cpu: 100m
+                    memory: 128Mi
+                volumeMounts:
+                - name: tmp
+                  mountPath: /tmp
+                - name: multicluster-operators-subscription-tls
+                  readOnly: true
+                  mountPath: /etc/subscription
+              volumes:
+              - name: tmp
+                emptyDir: {}
+              - name: multicluster-operators-subscription-tls
+                secret: null
+                defaultMode: 420
+                secretName: multicluster-operators-subscription
+                items:
+                - key: tls.crt
+                  path: tls.crt
+                - key: tls.key
+                  path: tls.key
+              serviceAccountName: multicluster-operators
+  replaces: advanced-cluster-management.v2.0.8
+  relatedImages:
+  - name: application_ui
+    image: registry.redhat.io/rhacm2/application-ui-rhel8@sha256:62085e2e59ebd9b6bef5a19c2034783443b7a5c5d0baba3034491a5a580e5e2e
+  - name: cert_manager_acmesolver
+    image: registry.redhat.io/rhacm2/acmesolver-rhel8@sha256:2d76cb9595f5776bf08fa988a6bcdfea52698a1dbdae8efa43667cff15e3fdab
+  - name: cert_manager_cainjector
+    image: registry.redhat.io/rhacm2/cainjector-rhel8@sha256:8a9e0ddf9321f4c8822ce23c58514d796b5750f436101acc07d4a2930f045aff
+  - name: cert_manager_controller
+    image: registry.redhat.io/rhacm2/cert-manager-controller-rhel8@sha256:b4315211a552ad92352e7fdac64a16deb472cbc4ea1a595f39c3ee586b3182bd
+  - name: cert_manager_webhook
+    image: registry.redhat.io/rhacm2/cert-manager-webhook-rhel8@sha256:75528dea55c98bd39011bd322e86416f70044e3ea83939718400405b0038f7af
+  - name: cert_policy_controller
+    image: registry.redhat.io/rhacm2/cert-policy-controller-rhel8@sha256:9a9ef8dba9ba51308d64802f9992a70251f616dbb691a51a3d26173cf62cdbf7
+  - name: config_policy_controller
+    image: registry.redhat.io/rhacm2/config-policy-controller-rhel8@sha256:46634ceaba3aef7031d1a824abb00a3c6afca28bdc158de3f58cdc1f01ded67b
+  - name: configmap_watcher
+    image: registry.redhat.io/rhacm2/configmap-watcher-rhel8@sha256:c29d916073d9ca26f92792ca3dd5525869e6b7140f77ee4a4114fa3e9f24dcda
+  - name: console_api
+    image: registry.redhat.io/rhacm2/console-api-rhel8@sha256:3c03618ea2d4ef79f965624fbfc459af735b81a276fde4d76ee40748506e9900
+  - name: console_header
+    image: registry.redhat.io/rhacm2/console-header-rhel8@sha256:66544526499c1daa9adbfc5cf8eb1a271d4cacbca98d10d9da7823ca956ca6e6
+  - name: console_ui
+    image: registry.redhat.io/rhacm2/console-ui-rhel8@sha256:dd4f527f8e92c2dd5114c49ea7b0fe3414c6df8d0f976dba9effaf507cb428bb
+  - name: endpoint_component_operator
+    image: registry.redhat.io/rhacm2/endpoint-component-rhel8-operator@sha256:4d1d640f5c6f63e17ce683fa11c391d36183867e86c8e1fd8d18f3d9915e9a57
+  - name: governance_policy_propagator
+    image: registry.redhat.io/rhacm2/governance-policy-propagator-rhel8@sha256:c82c3a151bdea8b76a986c061d9e759c99530fab4e0d3c4afb225bf41f4786fc
+  - name: governance_policy_spec_sync
+    image: registry.redhat.io/rhacm2/governance-policy-spec-sync-rhel8@sha256:7bb2cd5a3dcdd6becd28a02e4f3c202a2656069b836f889126f15c3822b30bc7
+  - name: governance_policy_status_sync
+    image: registry.redhat.io/rhacm2/governance-policy-status-sync-rhel8@sha256:d1b4fd35528c07ca5f02d9ea0763ba7f787f61e5b46e9e6ae6d3100f709dfce8
+  - name: governance_policy_template_sync
+    image: registry.redhat.io/rhacm2/governance-policy-template-sync-rhel8@sha256:26207c708f67aa0fd516880bd9d5a660e696cc96521edb568e3eada2e82190d0
+  - name: grc_ui
+    image: registry.redhat.io/rhacm2/grc-ui-rhel8@sha256:be2b0ab06ca47560133ea268049be862f1d2514e233241ab9fb8434bc828a880
+  - name: grc_ui_api
+    image: registry.redhat.io/rhacm2/grc-ui-api-rhel8@sha256:3421c8cf5a26314bf43008d5ecb538d05846efbc85a5e6903f31e036a5881f86
+  - name: iam_policy_controller
+    image: registry.redhat.io/rhacm2/iam-policy-controller-rhel8@sha256:a5292e988277aa24da14ecd265e46c0dcb3e2d445f49b06de74059ec0f1f2329
+  - name: kui_web_terminal
+    image: registry.redhat.io/rhacm2/kui-web-terminal-rhel8@sha256:ddee6659a94390aadc163eb441b234d7e7e213e9c06925ed96e6fe9223d2041e
+  - name: management_ingress
+    image: registry.redhat.io/rhacm2/management-ingress-rhel7@sha256:50f4ddb17fd062047195aa6af7a558b19d57afb26c5b7c1c826ce48c454d1b4e
+  - name: mcm_topology
+    image: registry.redhat.io/rhacm2/mcm-topology-rhel8@sha256:59f463970e9b08f7aadfdbf6e9c7e83062c5e6d1029190b2d6fca52888aadd0d
+  - name: mcm_topology_api
+    image: registry.redhat.io/rhacm2/mcm-topology-api-rhel8@sha256:16f2ab864eb82f73a2520e585c21a196921768ccaae99cf40c3e3670e0b27a32
+  - name: multicloud_manager
+    image: registry.redhat.io/rhacm2/multicloud-manager-rhel8@sha256:8d23a4bd293f408c985adace4cbd3efae34a358df09214273671a3f19d965401
+  - name: multiclusterhub_repo
+    image: registry.redhat.io/rhacm2/multiclusterhub-repo-rhel8@sha256:78d1baf3c14de933949b1b15bb7d81752f69e1df210384f1c8857350177b3b8a
+  - name: rcm_controller
+    image: registry.redhat.io/rhacm2/rcm-controller-rhel8@sha256:d7f3e5e38a104eb371d93006506643687e2d26c02d1fd9197f03634833826631
+  - name: redisgraph_tls
+    image: registry.redhat.io/rhacm2/redisgraph-tls-rhel8@sha256:a9ce0c65e4ee62ae41fdf5290ccb1a352933b0161946799c4f2e571a81b1b0e3
+  - name: search_aggregator
+    image: registry.redhat.io/rhacm2/search-aggregator-rhel7@sha256:9e80227725145cc6d0c4c7ef078edc42a2b88309838f8346238bea42c6385658
+  - name: search_api
+    image: registry.redhat.io/rhacm2/search-api-rhel8@sha256:f37aedfde94c1b9cd4dca73ebe4420ca4c8a5333bb0ab267c757d1b53fe2733d
+  - name: search_collector
+    image: registry.redhat.io/rhacm2/search-collector-rhel8@sha256:113b68fe4f188747307102d29d8e7078393ee867346235df9e4d800784bcd2fc
+  - name: search_operator
+    image: registry.redhat.io/rhacm2/search-rhel8@sha256:bab191798857c7feb3a6005ef8b523927e5635e0ccdfc7f7b2e00e5b4e0e1bc4
+  - name: multicluster_operators_subscription_release
+    image: registry.redhat.io/rhacm2/multicluster-operators-subscription-release-rhel8@sha256:a24d3234147a4a9623448517b8d75712108c0a32515340291fcc6ca63b88583f
+  - name: registration
+    image: registry.redhat.io/rhacm2/registration-rhel8@sha256:18df48da1a785e23a1c95d3c7aae8dd3c6d6687016dbca3805f73961011e9f41
+  - name: work
+    image: registry.redhat.io/rhacm2/work-rhel8@sha256:0a4de19ba75574b52112e90229e1edc97f81982ed543f36eee84b88c31f02001
+  - name: acm_must_gather
+    image: registry.redhat.io/rhacm2/acm-must-gather-rhel8@sha256:9c4c6f3bb06dc008af6024ecf4a01d311fcbfcbc3c7c860be3e73a2a38ef69d3
+  - name: endpoint_operator
+    image: registry.redhat.io/rhacm2/endpoint-rhel8-operator@sha256:26b9abd0de10fe220b0bcd6c334b29abc77684a0f03287f08c3c2a3416d0c5fa
+  - name: oauth_proxy
+    image: registry.redhat.io/openshift4/ose-oauth-proxy@sha256:3948de88df41ba184c0541146997dbfbc705e2a9489f6433fb8da2858eecd041

@@ -1,0 +1,5 @@
+packageName: submariner
+channels:
+- name: alpha
+  currentCSV: submariner.v0.8
+defaultChannel: alpha

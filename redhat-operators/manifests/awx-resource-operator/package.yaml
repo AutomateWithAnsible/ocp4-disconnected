@@ -1,0 +1,5 @@
+packageName: awx-resource-operator
+channels:
+- name: release-0.1
+  currentCSV: awx-resource-operator.v0.1.1
+defaultChannel: release-0.1

@@ -1,0 +1,13 @@
+packageName: openshift-pipelines-operator-rh
+channels:
+- name: ocp-4.4
+  currentCSV: openshift-pipelines-operator.v1.0.1
+- name: ocp-4.5
+  currentCSV: redhat-openshift-pipelines-operator.v1.1.2
+- name: ocp-4.6
+  currentCSV: redhat-openshift-pipelines-operator.v1.2.3
+- name: preview
+  currentCSV: redhat-openshift-pipelines-operator.v1.2.3
+- name: stable
+  currentCSV: redhat-openshift-pipelines-operator.v1.2.3
+defaultChannel: stable

@@ -1,0 +1,5 @@
+packageName: rhsso-operator
+channels:
+- name: alpha
+  currentCSV: rhsso-operator.7.4.6
+defaultChannel: alpha

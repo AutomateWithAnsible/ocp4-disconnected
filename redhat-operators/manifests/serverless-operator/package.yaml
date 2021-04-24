@@ -1,0 +1,11 @@
+packageName: serverless-operator
+channels:
+- name: "4.3"
+  currentCSV: serverless-operator.v1.7.2
+- name: "4.4"
+  currentCSV: serverless-operator.v1.7.2
+- name: "4.5"
+  currentCSV: serverless-operator.v1.10.1
+- name: "4.6"
+  currentCSV: serverless-operator.v1.10.0
+defaultChannel: "4.5"

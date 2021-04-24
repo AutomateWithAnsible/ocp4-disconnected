@@ -1,0 +1,7 @@
+channels:
+- currentCSV: clusterresourceoverride-operator.4.4.0-202101261542.p0
+  name: '4.4'
+- currentCSV: clusterresourceoverride-operator.4.5.0-202101051830.p0
+  name: '4.5'
+defaultChannel: '4.5'
+packageName: clusterresourceoverride

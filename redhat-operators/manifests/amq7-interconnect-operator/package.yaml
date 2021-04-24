@@ -1,0 +1,5 @@
+packageName: amq7-interconnect-operator
+channels:
+- name: 1.2.0
+  currentCSV: amq7-interconnect-operator.v1.2.3
+defaultChannel: 1.2.0

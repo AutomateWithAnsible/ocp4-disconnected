@@ -1,0 +1,11 @@
+channels:
+- currentCSV: openshiftansibleservicebroker.4.1.41-202004151639
+  name: stable
+- currentCSV: openshiftansibleservicebroker.4.2.36-202006230600.p0
+  name: '4.2'
+- currentCSV: openshiftansibleservicebroker.4.2.36-202006230600.p0-s390x
+  name: 4.2-s390x
+- currentCSV: openshiftansibleservicebroker.4.3.40-202010141211.p0
+  name: '4.3'
+defaultChannel: '4.3'
+packageName: openshiftansibleservicebroker

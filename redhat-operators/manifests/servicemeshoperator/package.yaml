@@ -1,0 +1,7 @@
+packageName: servicemeshoperator
+channels:
+- name: "1.0"
+  currentCSV: servicemeshoperator.v2.0.3
+- name: stable
+  currentCSV: servicemeshoperator.v2.0.3
+defaultChannel: stable
